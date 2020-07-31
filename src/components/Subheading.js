@@ -26,7 +26,7 @@ export default function Subheading({
           </Box>
           <Box  w="100%"  border="solid 1px" borderColor="lid.stroke" color="white" borderRadius="5px" p="25px"
             bg="linear-gradient(0deg, rgba(12,101,235,1) 0%, rgba(28,158,247,1) 100%)" >
-            <Image src="/ethereum-eth-logo-white.png" alt="Lid Website" w="auto" h="25px" display="inline-block" position="relative" top="-3px"/>
+            <Image src="/LID_logo_pure_white.png" alt="Lid Website" w="auto" h="25px" display="inline-block" position="relative" top="-3px"/>
             <Text ml="10px" mt="5px" color="lid.bg" display="inline-block">
               Your Staked LID
             </Text>
@@ -56,7 +56,7 @@ export default function Subheading({
           </Box>
           <Box  w="100%"  border="solid 1px" borderColor="lid.stroke" color="lid.fg" borderRadius="5px" p="25px"
             bg="lid.bg" >
-            <Image src="/ethereum-eth-logo.png" alt="Lid Website" w="auto" h="25px" display="inline-block" position="relative" top="-3px"/>
+            <Image src="/logo-200.png" alt="Lid Website" w="auto" h="25px" display="inline-block" position="relative" top="-3px"/>
             <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
               Total Staked LID
             </Text>
