@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import addresses from "./contracts/addresses";
 import abis from "./contracts/abis";
-import { ThemeProvider, CSSReset, Box } from "@chakra-ui/core"
+import { ThemeProvider, CSSReset, Box, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/core"
 import theme from "./theme"
 import "./App.css";
 
@@ -22,7 +22,9 @@ import Subheading from "./components/Subheading"
 import StartTimer from "./components/StartTimer"
 import ReferralCode from "./components/ReferralCode"
 import Footer from "./components/Footer"
-import CountDown from "./components/CountDown"
+import Stake from "./components/Stake"
+import Unstake from "./components/Unstake"
+import Dividends from "./components/Dividends"
 
 const INFURA_ID = "c0a5d6437d9e42d28f48961b1dfcefb8"
 
@@ -95,6 +97,7 @@ function App() {
 
   const [accountLid, setAccountLid] = useState("0")
   const [accountLidStaked, setAccountLidStaked] = useState("0")
+  const [accountDividends, setAccountDividends] = useState("0")
   const [isRegistered, setIsRegistered] = useState(false)
 
   const [referralEarnings, setReferralEarnings] = useState("0")
@@ -131,7 +134,8 @@ function App() {
         isRegistered,
         accountLid,
         referralCount,
-        accountLidStaked
+        accountLidStaked,
+        accountDividends,
       ] = await Promise.all([
         lidTokenSC.methods.totalSupply().call(),
         lidStakingSC.methods.totalStaked().call(),
@@ -139,7 +143,8 @@ function App() {
         lidStakingSC.methods.stakerIsRegistered(address).call(),
         lidTokenSC.methods.balanceOf(address).call(),
         lidStakingSC.methods.accountReferrals(address).call(),
-        lidStakingSC.methods.stakeValue(address).call()
+        lidStakingSC.methods.stakeValue(address).call(),
+        lidStakingSC.methods.dividendsOf(address).call()
       ])
 
       setTotalLid(totalLid)
@@ -149,6 +154,7 @@ function App() {
       setAccountLid(accountLid)
       setReferralCount(referralCount)
       setAccountLidStaked(accountLidStaked)
+      setAccountDividends(accountDividends)
       setReferralEarnings(toBN(referralCount).mul(toBN(toWei("200"))))
     }
 
@@ -225,10 +231,31 @@ function App() {
       <Header web3={web3} address={address} onConnect={onConnect}  />
       <Subheading web3={web3} address={address} totalLid={totalLid} accountLidStaked={accountLidStaked}
         totalStakers={totalStakers} totalStaked={totalStaked} accountLid={accountLid} />
-      {isActive && (<>
+      {!isActive && (<>
+        <Box maxW="1200px" align="center" ml="auto" mr="auto"
+            pt="20px" pl={{base:"20px", lg:"0px"}} pr={{base:"20px", lg:"0px"}}>
+          <Tabs isFitted bg="#F3F5F9" p="20px" borderColor="lid.stroke" border="solid 1px" borderRadius="5px" >
+            <TabList variant="unstyled" color="#ACB2BB" fontSize="24px" borderBottom="solid 2px" borderColor="lid.stroke" pb="20px" >
+              <Tab _selected={{color:"lid.brand", border:"none"}}>Stake</Tab>
+              <Tab  _selected={{color:"lid.brand", border:"none"}}>Unstake</Tab>
+              <Tab  _selected={{color:"lid.brand", border:"none"}}>Dividends</Tab>
+            </TabList>
+            <TabPanels textAlign="center">
+              <TabPanel>
+                <Stake web3={web3} address={address} accountLid={accountLid} isRegistered={isRegistered} lidStakingSC={lidStakingSC} />
+              </TabPanel>
+              <TabPanel>
+                <Unstake web3={web3} address={address} accountLidStaked={accountLidStaked} lidStakingSC={lidStakingSC} />
+              </TabPanel>
+              <TabPanel>
+                <Dividends web3={web3} address={address} accountDividends={accountDividends} lidStakingSC={lidStakingSC} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </Box>
         <ReferralCode web3={web3} address={address} earnedReferrals={referralEarnings} referralCount={referralCount} />
       </>)}
-      {!isActive && (<>
+      {isActive && (<>
         <StartTimer expiryTimestamp={startTime} />
       </>)}
       <Footer />

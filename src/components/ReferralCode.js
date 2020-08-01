@@ -16,10 +16,10 @@ export default function ReferralCode({web3, address, earnedReferrals, referralCo
       <Text fontSize="36px" color="lid.fg" width="100%">
         Referral Code
       </Text>
-      <Text color="lid.brand" mt="10px" mb="10px">
+      <Text color="lid.info" mt="10px" mb="0px">
         200 LID for each referral who registers.
       </Text>
-      <Text color="lid.brand" mt="10px" mb="10px">
+      <Text color="lid.info" mt="0px" mb="10px">
         Rewards are automated, you do not need to claim.
       </Text>
       <Text wordBreak="break-word" p="15px" pl="25px" color="lid.fgMed" border="solid 1px" borderColor="lid.stroke" borderRadius="28px"

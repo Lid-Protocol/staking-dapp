@@ -5,6 +5,7 @@ theme.colors = {
     brand:"#0c65EB",
     brandLight:"#1C9EF7",
     brandDark:"#074E9C",
+    info:"#4DA8FA",
     stroke:"#E4E4E4",
     bg:"#fff",
     bgMed: "#E5E9Ef",
