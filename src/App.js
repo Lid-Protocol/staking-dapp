@@ -231,7 +231,7 @@ function App() {
       <Header web3={web3} address={address} onConnect={onConnect}  />
       <Subheading web3={web3} address={address} totalLid={totalLid} accountLidStaked={accountLidStaked}
         totalStakers={totalStakers} totalStaked={totalStaked} accountLid={accountLid} />
-      {!isActive && (<>
+      {isActive && (<>
         <Box maxW="1200px" align="center" ml="auto" mr="auto"
             pt="20px" pl={{base:"20px", lg:"0px"}} pr={{base:"20px", lg:"0px"}}>
           <Tabs isFitted bg="#F3F5F9" p="20px" borderColor="lid.stroke" border="solid 1px" borderRadius="5px" >
@@ -255,7 +255,7 @@ function App() {
         </Box>
         <ReferralCode web3={web3} address={address} earnedReferrals={referralEarnings} referralCount={referralCount} />
       </>)}
-      {isActive && (<>
+      {!isActive && (<>
         <StartTimer expiryTimestamp={startTime} />
       </>)}
       <Footer />
