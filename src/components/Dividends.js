@@ -52,7 +52,7 @@ export default function Dividends({web3, address, lidStakingSC, accountDividends
         fontWeight="regular"
         onClick={handleReinvest}
       >
-        Reiunvest
+        Reinvest
       </Button>
     </Box>
   );

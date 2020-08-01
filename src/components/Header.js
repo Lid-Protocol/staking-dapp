@@ -31,7 +31,7 @@ export default function Header({web3, address, isWhitelisted, onConnect}) {
       </Flex>
       <Box color="lid.fgMed" display="block" w="100%"  pl={{base:"20px", lg:"0px"}} pr={{base:"20px", lg:"0px"}} maxW="1200px" ml="auto" mr="auto">
         <Text>
-          v0.1.1
+          v0.1.2
         </Text>
       </Box>
 

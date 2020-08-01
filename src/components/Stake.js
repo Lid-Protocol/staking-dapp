@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import { Text, Box, Button,NumberInput, NumberInputField } from "@chakra-ui/core"
+import { Text, Box, Button,NumberInput, NumberInputField,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody, Input,
+  ModalCloseButton, useDisclosure } from "@chakra-ui/core"
 
 export default function Stake({web3, address, lidStakingSC, accountLid, isRegistered}) {
   const toBN = web3.utils.toBN
@@ -10,6 +17,8 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
   useEffect(()=>{
     if(!referralAddress || referralAddress.length !== 42 ) setReferralAddress("0x0000000000000000000000000000000000000000")
   },[])
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [displayVal, setDisplayVal] = useState("")
 
@@ -79,7 +88,6 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
           focusBorderColor="blue.500"
           errorBorderColor="red.500"
           onChange={e => {
-            console.log(e.target)
               e.target.setAttribute("pattern","[0-9\.]*")
               if(isNaN(e.target.value)) return
               if(e.target.value === "") {
@@ -105,6 +113,36 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
       >
         Max
       </Button>
+      <Button variant="transparent" onClick={onOpen}>Enter Referral Code</Button>
+
+      <Modal isOpen={isOpen} onClose={onClose} >
+        <ModalOverlay zIndex="100" />
+        <ModalContent zIndex="101" p="20px" position="fixed" top="20px" left="50%" w="360px" ml="-180px" >
+          <ModalHeader>Referral Code</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Enter a referral code.</Text>
+            <Input type="text" onChange={e => {
+              if(!e.target.value || e.target.value.length !== 42 ) {
+                setReferralAddress("0x0000000000000000000000000000000000000000")
+              } else {
+                setReferralAddress(e.target.value)
+              }
+            }} />
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="transparent" onClick={onClose}>
+              Submit
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <Text color="#55595D" >Referral Code : {(!referralAddress || referralAddress === "0x0000000000000000000000000000000000000000") ? (
+        "None"
+      ) : (
+        referralAddress.substring(0, 6) + "..." + referralAddress.slice(-4)
+      )
+    }</Text>
     </Box>
   );
 }
