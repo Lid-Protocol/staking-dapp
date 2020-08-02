@@ -8,7 +8,7 @@ export default function Dividends({web3, address, lidStakingSC, accountDividends
   const fromWei = web3.utils.fromWei
 
   const handleWithdraw = async ()=>{
-    const requestBN = toBN(toWei(accountDividends))
+    const requestBN = toBN(accountDividends)
     if(!web3 || !address || !lidStakingSC) {
       alert("You are not connected. Connect and try again.")
       return
@@ -22,7 +22,7 @@ export default function Dividends({web3, address, lidStakingSC, accountDividends
   }
 
   const handleReinvest = async ()=>{
-    const requestBN = toBN(toWei(accountDividends))
+    const requestBN = toBN(accountDividends)
     if(!web3 || !address || !lidStakingSC) {
       alert("You are not connected. Connect and try again.")
       return
