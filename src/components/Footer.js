@@ -21,7 +21,7 @@ export default function Footer() {
         <Link display="inline-block" href="https://t.me/LIDProtocol" m="20px" >
           <Image  w="auto" h="25px" src="./icons/telegram.png" />
         </Link>
-        <Link display="inline-block" href="https://twitter.com/LIDProtocol" m="20px" >
+        <Link display="inline-block" href="https://twitter.com/LIDProtocol1" m="20px" >
           <Image  w="auto" h="25px" src="./icons/Twitter.png" />
         </Link>
         <Link display="inline-block" href="https://www.reddit.com/r/LIDProtocol/" m="20px" >

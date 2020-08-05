@@ -37,7 +37,7 @@ export default function Dividends({web3, address, lidStakingSC, accountDividends
 
   return (
     <Box w="100%" pt="20px" position="relative" textAlign="center">
-      <Text fontSize="36px">Dividends</Text>
+      <Text fontSize="36px">Rewards</Text>
       <Text color="lid.info" mt="10px" mb="0px">
         Free to withdraw or reinvest.
       </Text>

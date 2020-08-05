@@ -237,7 +237,7 @@ function App() {
             <TabList variant="unstyled" color="#ACB2BB" fontSize="24px" borderBottom="solid 2px" borderColor="lid.stroke" pb="20px" >
               <Tab _selected={{color:"lid.brand", border:"none"}}>Stake</Tab>
               <Tab  _selected={{color:"lid.brand", border:"none"}}>Unstake</Tab>
-              <Tab  _selected={{color:"lid.brand", border:"none"}}>Dividends</Tab>
+              <Tab  _selected={{color:"lid.brand", border:"none"}}>Rewards</Tab>
             </TabList>
             <TabPanels textAlign="center">
               <TabPanel>
