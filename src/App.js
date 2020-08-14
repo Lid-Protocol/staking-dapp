@@ -27,7 +27,7 @@ import Stake from "./components/Stake"
 import Unstake from "./components/Unstake"
 import Dividends from "./components/Dividends"
 
-const INFURA_ID = "c0a5d6437d9e42d28f48961b1dfcefb8"
+const INFURA_ID = "cede1dd87f2e4cc29bab79aaf08c93f4"
 
 const providerOptions = {
   walletconnect: {
@@ -172,7 +172,7 @@ function App() {
         },
       ],
       {
-        rpcUrl: `wss://mainnet.infura.io/ws/v3/c0a5d6437d9e42d28f48961b1dfcefb8`,
+        rpcUrl: `wss://mainnet.infura.io/ws/v3/${INFURA_ID}`,
         multicallAddress: "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
         interval: 1000,
       }
