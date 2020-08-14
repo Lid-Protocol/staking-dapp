@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { createWatcher } from "@makerdao/multicall";
 import addresses from "./contracts/addresses";
 import abis from "./contracts/abis";
 import { ThemeProvider, CSSReset, Box, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/core"
@@ -91,17 +92,16 @@ function App() {
   const [lidStakingSC, setLidStakingSC] = useState(null)
   const [lidTokenSC, setLidTokenSC] = useState(null)
 
-  const [totalLid, setTotalLid] = useState("0")
-  const [totalStaked, setTotalStaked] = useState("0")
-  const [totalStakers, setTotalStakers] = useState("0")
-
-  const [accountLid, setAccountLid] = useState("0")
-  const [accountLidStaked, setAccountLidStaked] = useState("0")
-  const [accountDividends, setAccountDividends] = useState("0")
-  const [isRegistered, setIsRegistered] = useState(false)
-
-  const [referralEarnings, setReferralEarnings] = useState("0")
-  const [referralCount, setReferralCount] = useState("0")
+  const [state, setState] = useState({
+    totalLid: "0",
+    totalStaked: "0",
+    totalStakers: "0",
+    isRegistered: false,
+    accountLid: "0",
+    referralCount: "0",
+    accountLidStaked: "0",
+    accountDividends: "0",
+  });
 
   const [stakeVal, setStakeVal] = useState("")
   const [unstakeVal, setUnstakeVal] = useState("")
@@ -115,67 +115,78 @@ function App() {
 
   useEffect(()=>{
     if(!web3) return
-    if(!address) return
 
     const lidStakingSC = new web3.eth.Contract(abis.lidStaking, addresses.lidStaking)
     const lidTokenSC = new web3.eth.Contract(abis.lidToken, addresses.lidToken)
-    if (!lidStakingSC) return
-    if (!lidTokenSC) return
-
+    
     setLidStakingSC(lidStakingSC)
     setLidTokenSC(lidTokenSC)
+  },[web3])
 
-    //TODO: Switch to multicall.js
-    let fetchData = async(web3,address,lidStakingSC,lidTokenSC)=>{
-      const [
-        totalLid,
-        totalStaked,
-        totalStakers,
-        isRegistered,
-        accountLid,
-        referralCount,
-        accountLidStaked,
-        accountDividends,
-      ] = await Promise.all([
-        lidTokenSC.methods.totalSupply().call(),
-        lidStakingSC.methods.totalStaked().call(),
-        lidStakingSC.methods.totalStakers().call(),
-        lidStakingSC.methods.stakerIsRegistered(address).call(),
-        lidTokenSC.methods.balanceOf(address).call(),
-        lidStakingSC.methods.accountReferrals(address).call(),
-        lidStakingSC.methods.stakeValue(address).call(),
-        lidStakingSC.methods.dividendsOf(address).call()
-      ])
-
-      setTotalLid(totalLid)
-      setTotalStaked(totalStaked)
-      setTotalStakers(totalStakers)
-      setIsRegistered(isRegistered)
-      setAccountLid(accountLid)
-      setReferralCount(referralCount)
-      setAccountLidStaked(accountLidStaked)
-      setAccountDividends(accountDividends)
-      setReferralEarnings(toBN(referralCount).mul(toBN(toWei("200"))))
+  useEffect(() => {
+    if (!address) {
+      return;
     }
 
-    fetchData(web3,address,lidStakingSC,lidTokenSC)
+    const watcher = createWatcher(
+      [
+        {
+          target: addresses.lidToken,
+          call: ["totalSupply()(uint256)"],
+          returns: [["totalLid"]],
+        },
+        {
+          target: addresses.lidStaking,
+          call: ["totalStaked()(uint256)"],
+          returns: [["totalStaked"]],
+        },
+        {
+          target: addresses.lidStaking,
+          call: ["totalStakers()(uint256)"],
+          returns: [["totalStakers"]],
+        },
+        {
+          target: addresses.lidStaking,
+          call: ["stakerIsRegistered(address)(bool)", address],
+          returns: [["isRegistered"]],
+        },
+        {
+          target: addresses.lidToken,
+          call: ["balanceOf(address)(uint256)", address],
+          returns: [["accountLid"]],
+        },
+        {
+          target: addresses.lidStaking,
+          call: ["accountReferrals(address)(uint256)", address],
+          returns: [["referralCount"]],
+        },
+        {
+          target: addresses.lidStaking,
+          call: ["stakeValue(address)(uint256)", address],
+          returns: [["accountLidStaked"]],
+        },
+        {
+          target: addresses.lidStaking,
+          call: ["dividendsOf(address)(uint256)", address],
+          returns: [["accountDividends"]],
+        },
+      ],
+      {
+        rpcUrl: `wss://mainnet.infura.io/ws/v3/c0a5d6437d9e42d28f48961b1dfcefb8`,
+        multicallAddress: "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
+        interval: 1000,
+      }
+    );
 
-    let interval;
-    if(window.web3){
-      interval = setInterval((web3,address,lidStakingSC,lidTokenSC)=>{
-        if(!web3 || !address || !lidStakingSC || !lidTokenSC) return
-        fetchData(web3,address,lidStakingSC,lidTokenSC)
-      },2000)
-    } else {
-      interval = setInterval((web3,address,lidStakingSC,lidTokenSC)=>{
-        if(!web3 || !address || !lidStakingSC || !lidTokenSC) return
-        fetchData(web3,address,lidStakingSC,lidTokenSC)
-      },10000)
-    }
+    watcher.subscribe((update) => {
+      setState((prevState) => ({
+        ...prevState,
+        [update.type]: update.value.toString(),
+      }));
+    });
 
-    return ()=>clearInterval(interval)
-
-  },[web3,address])
+    watcher.start();
+  }, [address]);
 
   const resetApp = async () => {
     if (web3 && web3.currentProvider && web3.currentProvider.close) {
@@ -224,6 +235,18 @@ function App() {
       return (interval)=>clearInterval(interval)
     }
   },[startTime])
+
+  const {
+    totalLid,
+    totalStaked,
+    totalStakers,
+    isRegistered,
+    accountLid,
+    referralCount,
+    accountLidStaked,
+    accountDividends,
+  } = state;
+  const referralEarnings = toBN(referralCount).mul(toBN(toWei("200")));
 
   return (
     <ThemeProvider theme={theme} >
