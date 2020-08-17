@@ -27,13 +27,17 @@ import Stake from "./components/Stake"
 import Unstake from "./components/Unstake"
 import Dividends from "./components/Dividends"
 
-const INFURA_ID = "cede1dd87f2e4cc29bab79aaf08c93f4"
+const INFURA_IDS = [
+  "ddb5c708e4a7489abc4e403c97ef30fd", 
+  "152fa2c73dc942fe9e854217e4e72cf9",
+  "76bc1d064b684a0584cd0de79e477829"
+]
 
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider, // required
     options: {
-      infuraId: "82ca85988839411784c7bc1da12925de" // required
+      infuraId: "5cacf72720454a679468551381b8cab9" // required
     }
   },
   fortmatic: {
@@ -66,7 +70,7 @@ const providerOptions = {
   mewconnect: {
     package: MewConnect, // required
     options: {
-      infuraId: "98751a7645d8470489b41cee014c25ec" // required
+      infuraId: "da5c8ad2181c405c8dc7bdaf8766edfa" // required
     }
   }
 }
@@ -77,12 +81,13 @@ const web3Modal = new Web3Modal({
   providerOptions // required
 });
 
-
+const defaultWatcher = createWatcher([], {});
+const walletWatcher = createWatcher([], {});
 
 function App() {
 
   const [address, setAddress] = useState("")
-  const [provider, setProvider] = useState(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/'+INFURA_ID))
+  const [provider, setProvider] = useState(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/'+INFURA_IDS[Math.random() * 100 % 3]))
   const [web3, setWeb3] = useState(new Web3(provider))
   const [connected, setConnected] = useState(false)
 
@@ -102,6 +107,17 @@ function App() {
     accountLidStaked: "0",
     accountDividends: "0",
   });
+  const {
+    totalLid,
+    totalStaked,
+    totalStakers,
+    isRegistered,
+    accountLid,
+    referralCount,
+    accountLidStaked,
+    accountDividends,
+  } = state;
+  
 
   const [stakeVal, setStakeVal] = useState("")
   const [unstakeVal, setUnstakeVal] = useState("")
@@ -110,8 +126,16 @@ function App() {
   const toWei = web3.utils.toWei
   const fromWei = web3.utils.fromWei
 
+  const referralEarnings = toBN(referralCount).mul(toBN(toWei("200")));
+
   let referralAddress = window.location.hash.substr(2);
   if(!referralAddress || referralAddress.length !== 42 ) referralAddress = "0x0000000000000000000000000000000000000000"
+
+  const multiCallConfig = {
+    web3,
+    multicallAddress: "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
+    interval: 5000,
+  }
 
   useEffect(()=>{
     if(!web3) return
@@ -121,14 +145,8 @@ function App() {
     
     setLidStakingSC(lidStakingSC)
     setLidTokenSC(lidTokenSC)
-  },[web3])
 
-  useEffect(() => {
-    if (!address) {
-      return;
-    }
-
-    const watcher = createWatcher(
+    defaultWatcher.recreate(
       [
         {
           target: addresses.lidToken,
@@ -145,6 +163,28 @@ function App() {
           call: ["totalStakers()(uint256)"],
           returns: [["totalStakers"]],
         },
+      ],
+      multiCallConfig
+    );
+
+    defaultWatcher.subscribe((update) => {
+      setState((prevState) => ({
+        ...prevState,
+        [update.type]: update.value.toString(),
+      }));
+    });
+
+    defaultWatcher.start();
+
+  }, [web3])
+
+  useEffect(() => {
+    if (!web3 || !address) {
+      return;
+    }
+
+    walletWatcher.recreate(
+      [
         {
           target: addresses.lidStaking,
           call: ["stakerIsRegistered(address)(bool)", address],
@@ -171,22 +211,19 @@ function App() {
           returns: [["accountDividends"]],
         },
       ],
-      {
-        rpcUrl: `wss://mainnet.infura.io/ws/v3/${INFURA_ID}`,
-        multicallAddress: "0xeefba1e63905ef1d7acba5a8513c70307c1ce441",
-        interval: 1000,
-      }
+      multiCallConfig
     );
 
-    watcher.subscribe((update) => {
+    walletWatcher.subscribe((update) => {
       setState((prevState) => ({
         ...prevState,
         [update.type]: update.value.toString(),
       }));
     });
 
-    watcher.start();
-  }, [address]);
+    walletWatcher.start();
+
+  }, [web3, address]);
 
   const resetApp = async () => {
     if (web3 && web3.currentProvider && web3.currentProvider.close) {
@@ -235,18 +272,6 @@ function App() {
       return (interval)=>clearInterval(interval)
     }
   },[startTime])
-
-  const {
-    totalLid,
-    totalStaked,
-    totalStakers,
-    isRegistered,
-    accountLid,
-    referralCount,
-    accountLidStaked,
-    accountDividends,
-  } = state;
-  const referralEarnings = toBN(referralCount).mul(toBN(toWei("200")));
 
   return (
     <ThemeProvider theme={theme} >
