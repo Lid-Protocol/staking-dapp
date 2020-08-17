@@ -87,7 +87,7 @@ const walletWatcher = createWatcher([], {});
 function App() {
 
   const [address, setAddress] = useState("")
-  const [provider, setProvider] = useState(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/'+INFURA_IDS[Math.random() * 100 % 3]))
+  const [provider, setProvider] = useState(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/'+INFURA_IDS[Math.floor(Math.random() * 100 % 3)]))
   const [web3, setWeb3] = useState(new Web3(provider))
   const [connected, setConnected] = useState(false)
 
