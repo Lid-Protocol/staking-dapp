@@ -215,11 +215,13 @@ function App() {
     );
 
     walletWatcher.subscribe((update) => {
+      const { type, value } = update;
       setState((prevState) => ({
         ...prevState,
-        [update.type]: update.value.toString(),
+        [update.type]: type === 'isRegistered' ? value : value.toString(),
       }));
     });
+    console.log("state", state);
 
     walletWatcher.start();
 

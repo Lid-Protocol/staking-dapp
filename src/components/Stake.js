@@ -23,7 +23,7 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
   const [displayVal, setDisplayVal] = useState("")
 
   const handleStake = async ()=>{
-    const requestBN = toBN(toWei(displayVal))
+    const requestBN = toBN(toWei(displayVal || "0"))
     if(!web3 || !address || !lidStakingSC) {
       alert("You are not connected. Connect and try again.")
       return
