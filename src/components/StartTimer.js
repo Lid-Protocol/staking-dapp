@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useTimer } from 'react-timer-hook';
+import React from 'react';
 import { Text, Box } from '@chakra-ui/core';
 import CountDown from './CountDown';
 

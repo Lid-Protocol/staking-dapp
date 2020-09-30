@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Text,
-  Box,
-  Button,
-  NumberInput,
-  NumberInputField
-} from '@chakra-ui/core';
+import React from 'react';
+import { Text, Box, Button } from '@chakra-ui/core';
 import { shortEther } from '../utils';
 
 export default function Dividends({

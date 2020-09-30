@@ -13,7 +13,6 @@ import {
   TabPanel
 } from '@chakra-ui/core';
 import theme from './theme';
-import './App.css';
 
 import Web3 from 'web3';
 import Web3Modal from 'web3modal';
@@ -29,7 +28,6 @@ import MewConnect from '@myetherwallet/mewconnect-web-client';
 
 import Header from './components/Header';
 import Subheading from './components/Subheading';
-import StartTimer from './components/StartTimer';
 import ReferralCode from './components/ReferralCode';
 import Footer from './components/Footer';
 import Stake from './components/Stake';
@@ -130,9 +128,6 @@ function App() {
     accountLidStaked,
     accountDividends
   } = state;
-
-  const [stakeVal, setStakeVal] = useState('');
-  const [unstakeVal, setUnstakeVal] = useState('');
 
   const toBN = web3.utils.toBN;
   const toWei = web3.utils.toWei;

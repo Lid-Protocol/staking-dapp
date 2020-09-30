@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, Box, Link, Image } from '@chakra-ui/core';
-import addresses from '../contracts/addresses';
 
 export default function Footer() {
   return (

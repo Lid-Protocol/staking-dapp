@@ -3,17 +3,7 @@ import { useTimer } from 'react-timer-hook';
 import { Text, Box } from '@chakra-ui/core';
 
 export default function CountDown({ expiryTimestamp }) {
-  const {
-    seconds,
-    minutes,
-    hours,
-    days,
-    isRunning,
-    start,
-    pause,
-    resume,
-    restart
-  } = useTimer({
+  const { seconds, minutes, hours, days, start, restart } = useTimer({
     expiryTimestamp,
     onExpire: () => console.warn('onExpire called')
   });
