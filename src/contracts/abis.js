@@ -1,5 +1,5 @@
-import lidStaking from "./abis/LidStaking.json"
-import lidToken from "./abis/LidToken.json"
+import lidStaking from './abis/LidStaking.json';
+import lidToken from './abis/LidToken.json';
 
 const abis = {
   lidStaking: lidStaking,

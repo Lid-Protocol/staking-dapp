@@ -1,58 +1,76 @@
-import React, {useEffect, useState} from 'react';
-import { Text, Box, Button,
+import React, { useEffect, useState } from 'react';
+import {
+  Text,
+  Box,
+  Button,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody, Input,
-  ModalCloseButton, useDisclosure } from "@chakra-ui/core"
+  ModalBody,
+  Input,
+  ModalCloseButton,
+  useDisclosure
+} from '@chakra-ui/core';
 
-export default function Stake({web3, address, lidStakingSC, accountLid, isRegistered}) {
-  const toBN = web3.utils.toBN
-  const toWei = web3.utils.toWei
-  const fromWei = web3.utils.fromWei
+export default function Stake({
+  web3,
+  address,
+  lidStakingSC,
+  accountLid,
+  isRegistered
+}) {
+  const toBN = web3.utils.toBN;
+  const toWei = web3.utils.toWei;
+  const fromWei = web3.utils.fromWei;
 
-  const [referralAddress, setReferralAddress] = useState(window.location.hash.substr(2))
-  useEffect(()=>{
-    if(!referralAddress || referralAddress.length !== 42 ) setReferralAddress("0x0000000000000000000000000000000000000000")
-  },[])
+  const [referralAddress, setReferralAddress] = useState(
+    window.location.hash.substr(2)
+  );
+  useEffect(() => {
+    if (!referralAddress || referralAddress.length !== 42)
+      setReferralAddress('0x0000000000000000000000000000000000000000');
+  }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [displayVal, setDisplayVal] = useState("")
+  const [displayVal, setDisplayVal] = useState('');
 
-  const handleStake = async ()=>{
-    const requestBN = toBN(toWei(displayVal || "0"))
-    if(!web3 || !address || !lidStakingSC) {
-      alert("You are not connected. Connect and try again.")
-      return
+  const handleStake = async () => {
+    const requestBN = toBN(toWei(displayVal || '0'));
+    if (!web3 || !address || !lidStakingSC) {
+      alert('You are not connected. Connect and try again.');
+      return;
     }
-    const min = isRegistered ? (
-      1
-    ) : (
-      referralAddress !== "0x0000000000000000000000000000000000000000" ? (
-        201
-      ) : (
-        401
-      )
-    )
-    if(requestBN.lt(toBN(toWei(min.toString())))){
-      alert("Must send at least "+min.toString()+" LID to stake and register.")
-      return
+    const min = isRegistered
+      ? 1
+      : referralAddress !== '0x0000000000000000000000000000000000000000'
+      ? 201
+      : 401;
+    if (requestBN.lt(toBN(toWei(min.toString())))) {
+      alert(
+        'Must send at least ' + min.toString() + ' LID to stake and register.'
+      );
+      return;
     }
-    if(requestBN.gt(toBN(accountLid))){
-      alert("Cannot stake more LID than is in your account.")
-      return
+    if (requestBN.gt(toBN(accountLid))) {
+      alert('Cannot stake more LID than is in your account.');
+      return;
     }
-    if(isRegistered) {
-      await lidStakingSC.methods.stake(requestBN.toString()).send({from:address})
-
+    if (isRegistered) {
+      await lidStakingSC.methods
+        .stake(requestBN.toString())
+        .send({ from: address });
     } else {
-      await lidStakingSC.methods.registerAndStake(requestBN.toString(),referralAddress).send({from:address})
+      await lidStakingSC.methods
+        .registerAndStake(requestBN.toString(), referralAddress)
+        .send({ from: address });
     }
-    alert("Stake request sent. Check your wallet to see when it has completed, then refresh this page.")
-  }
+    alert(
+      'Stake request sent. Check your wallet to see when it has completed, then refresh this page.'
+    );
+  };
 
   return (
     <Box w="100%" pt="20px" position="relative" textAlign="center">
@@ -66,10 +84,10 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
         Your registration fee will be
         <Text as="span" color="lid.fg">
           {isRegistered
-            ? " 0 "
-            : referralAddress !== "0x0000000000000000000000000000000000000000"
-            ? " 200 "
-            : " 400 "}
+            ? ' 0 '
+            : referralAddress !== '0x0000000000000000000000000000000000000000'
+            ? ' 200 '
+            : ' 400 '}
           LID
         </Text>
         .
@@ -86,7 +104,6 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
         type="number"
         placeholder="Amount of LID to Stake"
         borderRadius="30px"
-        
         pattern="[0-9\.]*"
         focusBorderColor="blue.500"
         errorBorderColor="red.500"
@@ -97,13 +114,13 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
         }
         value={displayVal}
         onChange={(e) => {
-          const tempVal = e.target.value.replace(/[^\d.]/g, "");
-          if (tempVal === "") {
-            setDisplayVal("");
+          const tempVal = e.target.value.replace(/[^\d.]/g, '');
+          if (tempVal === '') {
+            setDisplayVal('');
           } else if (Number(tempVal) > 140000000) {
-            setDisplayVal("140000000");
+            setDisplayVal('140000000');
           } else if (Number(tempVal) < 0) {
-            setDisplayVal("0");
+            setDisplayVal('0');
           } else {
             setDisplayVal(tempVal);
           }
@@ -166,7 +183,7 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
               onChange={(e) => {
                 if (!e.target.value || e.target.value.length !== 42) {
                   setReferralAddress(
-                    "0x0000000000000000000000000000000000000000"
+                    '0x0000000000000000000000000000000000000000'
                   );
                 } else {
                   setReferralAddress(e.target.value);
@@ -182,11 +199,11 @@ export default function Stake({web3, address, lidStakingSC, accountLid, isRegist
         </ModalContent>
       </Modal>
       <Text color="#55595D">
-        Referral Code :{" "}
+        Referral Code :{' '}
         {!referralAddress ||
-        referralAddress === "0x0000000000000000000000000000000000000000"
-          ? "None"
-          : referralAddress.substring(0, 6) + "..." + referralAddress.slice(-4)}
+        referralAddress === '0x0000000000000000000000000000000000000000'
+          ? 'None'
+          : referralAddress.substring(0, 6) + '...' + referralAddress.slice(-4)}
       </Text>
     </Box>
   );
