@@ -5,15 +5,18 @@ import App from './App';
 
 import * as serviceWorker from './serviceWorker';
 import 'assets/styles/global.css';
-import ThemeWrapper from 'containers/ThemeWrapper';
+import ThemeProvider from 'containers/ThemeProvider';
+import ApolloProvider from 'containers/ApolloProvider';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeWrapper>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ThemeWrapper>
+    <ApolloProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

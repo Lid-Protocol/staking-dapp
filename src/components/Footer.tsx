@@ -9,24 +9,23 @@ import iconReddit from 'assets/images/icons/reddit.png';
 import iconGithub from 'assets/images/icons/github.png';
 import iconYoutube from 'assets/images/icons/youtube.png';
 
-const Footer: React.FC = () => {
+interface IProps {
+  isAnalytics?: boolean;
+}
+
+const Footer: React.FC<IProps> = ({ isAnalytics }) => {
   return (
     <Box
       w="100%"
       minH="100px"
-      bg="lid.brandDark"
+      bg={isAnalytics ? 'lid.bgDark' : 'lid.brandDark'}
       color="lid.bg"
       position="relative"
-      p="40px"
-      mt="40px"
       fontWeight="normal"
       textAlign="center"
       fontSize="18px"
-      border-top="solid 1px gray"
-      ml="auto"
-      mr="auto"
-      borderTop="solid 1px"
-      borderColor="lid.ltGray"
+      p="40px"
+      mx="auto"
     >
       <Link
         display="inline-block"
