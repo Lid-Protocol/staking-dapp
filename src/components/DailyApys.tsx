@@ -18,8 +18,10 @@ import { DateRange } from './Metrics';
 
 import {
   TransactionType,
+  AggregateMetricType,
   TimeMetricPeriod,
-  useVolumeMetricsOfTypeQuery
+  useVolumeMetricsOfTypeQuery,
+  useAggregateMetricsOfTypeQuery
 } from '../graphql';
 
 const dateFilter = {
@@ -31,12 +33,12 @@ const dateFilter = {
 };
 
 const useDailyApysForPastWeek = () => {
-  const queryStake = useVolumeMetricsOfTypeQuery({
+  const queryStake = useAggregateMetricsOfTypeQuery({
     variables: {
       period: dateFilter.period,
       from: getUnixTime(dateFilter.from),
       to: getUnixTime(dateFilter.end),
-      type: TransactionType.StakingContractStaking
+      type: AggregateMetricType.TotalStaked
     },
     skip: false,
     fetchPolicy: 'cache-and-network'
@@ -59,7 +61,7 @@ const useDailyApysForPastWeek = () => {
       data:
         !queryStake.data || !queryDistribute.data
           ? []
-          : queryStake.data.volumeMetrics.map(
+          : queryStake.data.aggregateMetrics.map(
               ({ timestamp, value: stakeVal }, index) => {
                 const date = fromUnixTime(timestamp);
                 const distributeVal =
@@ -69,7 +71,8 @@ const useDailyApysForPastWeek = () => {
                     ? 0
                     : parseFloat(
                         (
-                          (parseFloat(distributeVal!) / parseFloat(stakeVal)) *
+                          ((parseFloat(distributeVal!) * 365) /
+                            parseFloat(stakeVal)) *
                           100
                         ).toFixed(2)
                       );
