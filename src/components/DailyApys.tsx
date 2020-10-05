@@ -1,21 +1,26 @@
 import React, { FC, useMemo } from 'react';
-import { BigNumber, utils as etherUtils } from 'ethers';
 import { VictoryLabel } from 'victory-core';
 import { VictoryLine } from 'victory-line';
 import { VictoryChart } from 'victory-chart';
 import { VictoryAxis } from 'victory-axis';
 import Skeleton from 'react-loading-skeleton';
-import { endOfHour, fromUnixTime, subDays, closestTo } from 'date-fns';
+import { endOfHour, fromUnixTime, subDays, getUnixTime } from 'date-fns';
 
-// import { useDailyApysForPastWeek } from '../../web3/hooks';
+import { useVictoryTheme } from '../containers/ThemeProvider';
+
 import {
   abbreviateNumber,
   percentageFormat,
   useDateFilterTickValues,
   useDateFilterTickFormat
 } from 'utils';
-import { TimeMetricPeriod } from 'graphql';
 import { DateRange } from './Metrics';
+
+import {
+  TransactionType,
+  TimeMetricPeriod,
+  useVolumeMetricsOfTypeQuery
+} from '../graphql';
 
 const dateFilter = {
   dateRange: DateRange.Week,
@@ -25,39 +30,78 @@ const dateFilter = {
   end: endOfHour(new Date())
 };
 
+const useDailyApysForPastWeek = () => {
+  const queryStake = useVolumeMetricsOfTypeQuery({
+    variables: {
+      period: dateFilter.period,
+      from: getUnixTime(dateFilter.from),
+      to: getUnixTime(dateFilter.end),
+      type: TransactionType.StakingContractStaking
+    },
+    skip: false,
+    fetchPolicy: 'cache-and-network'
+  });
+
+  const queryDistribute = useVolumeMetricsOfTypeQuery({
+    variables: {
+      period: dateFilter.period,
+      from: getUnixTime(dateFilter.from),
+      to: getUnixTime(dateFilter.end),
+      type: TransactionType.StakingContractDistribute
+    },
+    skip: false,
+    fetchPolicy: 'cache-and-network'
+  });
+
+  return useMemo(
+    () => ({
+      loading: queryStake.loading || queryDistribute.loading,
+      data:
+        !queryStake.data || !queryDistribute.data
+          ? []
+          : queryStake.data.volumeMetrics.map(
+              ({ timestamp, value: stakeVal }, index) => {
+                const date = fromUnixTime(timestamp);
+                const distributeVal =
+                  queryDistribute.data?.volumeMetrics[index].value;
+                const percentage =
+                  parseFloat(stakeVal) === 0
+                    ? 0
+                    : parseFloat(
+                        (
+                          (parseFloat(distributeVal!) / parseFloat(stakeVal)) *
+                          100
+                        ).toFixed(2)
+                      );
+                return {
+                  x: date.getTime(),
+                  y: percentage,
+                  percentage,
+                  date
+                };
+              }
+            )
+    }),
+    [
+      queryStake.loading,
+      queryDistribute.loading,
+      queryStake.data,
+      queryDistribute.data
+    ]
+  );
+};
+
 export const DailyApys: FC<{}> = () => {
-  // const dailyApys = useDailyApysForPastWeek();
-  const dailyApys: any = [];
+  const dailyApys = useDailyApysForPastWeek();
   const tickValues = useDateFilterTickValues(dateFilter);
   const tickFormat = useDateFilterTickFormat(dateFilter);
-  // const victoryTheme = useVictoryTheme();
-
-  // const data = useMemo<{ x: Date; y: number }[]>(
-  //   () =>
-  //     dailyApys
-  //       .filter((a: any) => a.value && a.start)
-  //       .map(({ value: any, start: any }) => {
-  //         const percentage = parseFloat(
-  //           etherUtils.formatUnits(value as BigNumber, 16)
-  //         );
-  //         const startTime = fromUnixTime(start as number);
-
-  //         return {
-  //           x: closestTo(startTime, tickValues),
-  //           y: percentage,
-  //           percentage
-  //         };
-  //       }),
-
-  //   [dailyApys, tickValues]
-  // );
-  const data: any = [];
+  const victoryTheme = useVictoryTheme();
 
   return (
-    <div>
-      {data.length ? (
+    <>
+      {dailyApys.data.length ? (
         <VictoryChart
-          // theme={victoryTheme}
+          theme={victoryTheme}
           height={200}
           domainPadding={25}
           padding={{ left: 45, top: 0, right: 20, bottom: 40 }}
@@ -78,7 +122,7 @@ export const DailyApys: FC<{}> = () => {
             }}
           />
           <VictoryLine
-            data={data}
+            data={dailyApys.data as any}
             labelComponent={<VictoryLabel />}
             labels={({
               datum: { percentage }
@@ -91,7 +135,7 @@ export const DailyApys: FC<{}> = () => {
             }
             style={{
               data: {
-                // stroke: Color.gold,
+                stroke: '#62BEE4',
                 strokeWidth: 2
               }
             }}
@@ -100,6 +144,6 @@ export const DailyApys: FC<{}> = () => {
       ) : (
         <Skeleton height={270} />
       )}
-    </div>
+    </>
   );
 };
