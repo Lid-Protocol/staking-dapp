@@ -27,13 +27,13 @@ const Analytics: React.FC<IProps> = ({ address, onConnect }) => {
       </Box>
       <Box w="100%" backgroundColor="lid.bgDark">
         <Box maxW="1200px" mx="auto" pt="20px" px={['20px', '20px', '0px']}>
-          <Text fontSize={['34px']} color="lid.textLight">
+          <Text fontSize={['26px' , '34px']} color="lid.textLight">
             Volumes
           </Text>
-          <Text fontSize={['18px']} color="lid.textGray">
+          <Text fontSize={['16px' , '18px']} color="lid.textGray">
             All values in LID
           </Text>
-          <Box w="100%" px={['60px']} mt={['50px']}>
+          <Box w={["110%", "100%"]} ml={['-15px', '0px']} px={['3px' , '60px']} mt={['15px','50px']}>
             <VolumeChart />
           </Box>
         </Box>
