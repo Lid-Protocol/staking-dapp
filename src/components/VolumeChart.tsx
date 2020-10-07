@@ -1,10 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { VictoryGroup } from 'victory-group';
-import { VictoryTooltip } from 'victory-tooltip';
-import { VictoryChart } from 'victory-chart';
-import { VictoryAxis } from 'victory-axis';
-import { VictoryBar } from 'victory-bar';
-import { VictoryVoronoiContainer } from 'victory-voronoi-container';
+import {
+  VictoryBar,
+  VictoryAxis,
+  VictoryChart,
+  VictoryTooltip,
+  VictoryGroup,
+  VictoryVoronoiContainer
+} from 'victory';
 import Skeleton from 'react-loading-skeleton';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 import { commify } from 'ethers/lib/utils';
@@ -200,10 +202,17 @@ const Chart: FC<{}> = () => {
           containerComponent={
             <VictoryVoronoiContainer
               voronoiDimension="x"
-              labels={({ datum }: { datum: Datum }) => commify(datum.y)}
+              labels={({ datum }: { datum: Datum }) =>
+                `${labels[datum.type]}: ${commify(datum.y)} LID`
+              }
               labelComponent={
                 <VictoryTooltip
                   constrainToVisibleArea
+                  cornerRadius={1}
+                  flyoutPadding={{ top: 2, bottom: 2, left: 4, right: 4 }}
+                  flyoutStyle={{
+                    fill: Colors.labelBg
+                  }}
                   style={
                     {
                       fill: ({ datum }: { datum: Datum }) => colors[datum.type]

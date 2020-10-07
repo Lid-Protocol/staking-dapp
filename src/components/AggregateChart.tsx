@@ -1,9 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import { VictoryChart } from 'victory-chart';
-import { VictoryLine } from 'victory-line';
-import { VictoryAxis } from 'victory-axis';
-import { VictoryTooltip } from 'victory-tooltip';
-import { VictoryVoronoiContainer } from 'victory-voronoi-container';
+import {
+  VictoryChart,
+  VictoryLine,
+  VictoryAxis,
+  VictoryTooltip,
+  VictoryVoronoiContainer
+} from 'victory';
 import { addDays, fromUnixTime, getUnixTime } from 'date-fns';
 import { commify } from 'ethers/lib/utils';
 import Skeleton from 'react-loading-skeleton';
@@ -56,18 +58,23 @@ const colorName = {
   [AggregateMetricType.TotalStaked]: 'lid.green'
 };
 
+const labels = {
+  [AggregateMetricType.TotalSupply]: 'Total Supply',
+  [AggregateMetricType.TotalStaked]: 'Total Staked'
+};
+
 const aggregateMetrics = [
   {
     type: AggregateMetricType.TotalSupply,
     enabled: true,
-    label: 'Total supply',
+    label: 'Total Supply',
     color: colors[AggregateMetricType.TotalSupply],
     colorName: colorName[AggregateMetricType.TotalSupply]
   },
   {
     type: AggregateMetricType.TotalStaked,
     enabled: true,
-    label: 'Total savings',
+    label: 'Total Staked',
     color: colors[AggregateMetricType.TotalStaked],
     colorName: colorName[AggregateMetricType.TotalStaked]
   }
@@ -145,9 +152,17 @@ const Chart: FC<{}> = () => {
           containerComponent={
             <VictoryVoronoiContainer
               voronoiDimension="x"
-              labels={({ datum }: { datum: Datum }) => commify(datum.y)}
+              labels={({ datum }: { datum: Datum }) =>
+                `${labels[datum.type]}: ${commify(datum.y)} LID`
+              }
               labelComponent={
                 <VictoryTooltip
+                  constrainToVisibleArea
+                  cornerRadius={1}
+                  flyoutPadding={{ top: 2, bottom: 2, left: 4, right: 4 }}
+                  flyoutStyle={{
+                    fill: Colors.labelBg
+                  }}
                   style={
                     {
                       fill: ({ datum }: { datum: Datum }) => colors[datum.type]

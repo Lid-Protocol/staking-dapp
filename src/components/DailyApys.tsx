@@ -1,10 +1,13 @@
 import React, { FC, useMemo } from 'react';
-import { VictoryLabel } from 'victory-core';
-import { VictoryLine } from 'victory-line';
-import { VictoryChart } from 'victory-chart';
-import { VictoryAxis } from 'victory-axis';
+import { VictoryLabel, VictoryLine, VictoryChart, VictoryAxis } from 'victory';
 import Skeleton from 'react-loading-skeleton';
-import { endOfHour, fromUnixTime, subDays, getUnixTime } from 'date-fns';
+import {
+  endOfHour,
+  fromUnixTime,
+  subDays,
+  getUnixTime,
+  closestTo
+} from 'date-fns';
 
 import { useVictoryTheme } from '../containers/ThemeProvider';
 
@@ -77,8 +80,6 @@ const useDailyApysForPastWeek = () => {
                         ).toFixed(2)
                       );
                 return {
-                  x: date.getTime(),
-                  y: percentage,
                   percentage,
                   date
                 };
@@ -100,9 +101,22 @@ export const DailyApys: FC<{}> = () => {
   const tickFormat = useDateFilterTickFormat(dateFilter);
   const victoryTheme = useVictoryTheme();
 
+  const data = useMemo<{ x: Date; y: number }[]>(
+    () =>
+      dailyApys.data.map(({ date, percentage }) => {
+        return {
+          x: closestTo(date.getTime(), tickValues),
+          y: percentage,
+          percentage
+        };
+      }),
+
+    [dailyApys, tickValues]
+  );
+
   return (
     <>
-      {dailyApys.data.length ? (
+      {data.length ? (
         <VictoryChart
           theme={victoryTheme}
           height={200}
@@ -111,7 +125,7 @@ export const DailyApys: FC<{}> = () => {
         >
           <VictoryAxis
             dependentAxis
-            tickFormat={abbreviateNumber}
+            tickFormat={(num: number) => `${abbreviateNumber(num)}%`}
             fixLabelOverlap
             style={{
               ticks: { stroke: 'none' }
@@ -125,7 +139,7 @@ export const DailyApys: FC<{}> = () => {
             }}
           />
           <VictoryLine
-            data={dailyApys.data as any}
+            data={data}
             labelComponent={<VictoryLabel />}
             labels={({
               datum: { percentage }
