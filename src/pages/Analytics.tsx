@@ -17,10 +17,10 @@ const Analytics: React.FC<IProps> = ({ address, onConnect }) => {
       <Header address={address} onConnect={onConnect} isAnalytics />
       <Box w="100%" backgroundColor="lid.bgDark">
         <Box maxW="1200px" mx="auto" pt="20px" px={['20px', '20px', '0px']}>
-          <Text fontSize={['34px']} color="lid.textLight">
+          <Text fontSize={['26px' , '34px']} color="lid.textLight">
             Staking APY
           </Text>
-          <Box w="100%" px={['60px']} mt={['50px']}>
+          <Box w={["110%" , "100%"]} ml={['-20px' , '0px']} px={['3px','60px']} mt={['15px' ,'50px']}>
             <DailyApys />
           </Box>
         </Box>
