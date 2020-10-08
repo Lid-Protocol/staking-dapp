@@ -29,49 +29,40 @@ const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
             src="/logo-200.png"
             alt="Lid Website"
             w="auto"
-            h="60px"
+            h={isAnalytics ? ["50px" , "60px"] : "60px"}
             display="inline-block"
             position="relative"
+            mt={isAnalytics ? ['60px','0'] : "0"}
           />
           <Text
             as="span"
             fontWeight="bold"
             fontSize={isAnalytics ? ['20px' ,'28px'] : ['28px', '42px']}
             display="inline-block"
-            ml="20px"
+            ml={isAnalytics ? ["8px" , "20px"] : "20px"}
+            w={isAnalytics ? ["220px" , '100%'] : ''}
+            mt={isAnalytics ? ['62px','0'] : "0"}
             color={isAnalytics ? 'lid.textLight' : 'lid.brand'}
           >
             {`LID ${isAnalytics ? 'ANALYTICS' : 'Staking'}`}
           </Text>
         </Link>
-        {address ? (
-          <Box ml="auto" display="inline-block">
-            <Blockie address={address} size={40} />
-            <Text
-              fontSize="10px"
-              textAlign="center"
-              fontFamily="monospace"
-              color={isAnalytics ? 'lid.textLight' : 'lid.fg'}
-            >
-              {address.substring(0, 6)}
-            </Text>
-          </Box>
-        ) : (
+
           <Button
             variant="solid"
             background="lid.buttonBgDk"
-            color="lid.bg"
+            color={isAnalytics ? "lid.brand" : "lid.bg"}
             ml="auto"
-            p="25px"
+            p={isAnalytics ? "20px" : "25px"}
             w="140px"
-            fontSize="18px"
+            fontSize={isAnalytics ? "20px" : "18px"}
             fontWeight="500"
             borderRadius="25px"
+            mt={isAnalytics ? ['-70px','0'] : "0"}
             onClick={onConnect}
           >
             Connect
           </Button>
-        )}
       </Flex>
       {!isAnalytics && (
         <Box
