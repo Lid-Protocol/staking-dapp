@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { VictoryLabel, VictoryLine, VictoryChart, VictoryAxis } from 'victory';
 import Skeleton from 'react-loading-skeleton';
 import {
+  startOfDay,
   endOfHour,
   fromUnixTime,
   subDays,
@@ -31,8 +32,8 @@ const dateFilter = {
   dateRange: DateRange.Week,
   period: TimeMetricPeriod.Day,
   label: '7 day',
-  from: subDays(new Date(), 6),
-  end: endOfHour(new Date())
+  from: startOfDay(subDays(new Date(), 7)),
+  end: startOfDay(subDays(new Date(), 1))
 };
 
 const useDailyApysForPastWeek = () => {
