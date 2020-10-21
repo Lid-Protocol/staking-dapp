@@ -101,7 +101,7 @@ const ReferralCode: React.FC<IReferralCode> = ({
           bg="lid.bg"
         >
           <Text fontSize="18px" m="0" p="0" color="lid.fgMed">
-            Referral Eth Earned
+            Referral LID Earned
           </Text>
           <Text fontSize="38px" w="100%" fontWeight="bold">
             {shortEther(earnedReferrals)}
