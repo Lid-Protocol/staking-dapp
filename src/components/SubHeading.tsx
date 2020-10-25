@@ -1,13 +1,73 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Text, Box, Flex, Link, Grid, Image } from '@chakra-ui/core';
-import Web3 from 'web3';
 
-import { shortEther } from 'utils';
+import { shortEther, percentageFormat } from 'utils';
 import { addresses } from 'config';
 
+import { startOfDay, subDays, getUnixTime } from 'date-fns';
+
+import { DateRange } from './Metrics';
+
+import {
+  TransactionType,
+  AggregateMetricType,
+  TimeMetricPeriod,
+  useVolumeMetricsOfTypeQuery,
+  useAggregateMetricsOfTypeQuery
+} from '../graphql';
+
+const dateFilter = {
+  dateRange: DateRange.Week,
+  period: TimeMetricPeriod.Day,
+  from: startOfDay(subDays(new Date(), 7)),
+  end: startOfDay(subDays(new Date(), 1))
+};
+
+const useAverageApysForPastWeek = () => {
+  const queryStake = useAggregateMetricsOfTypeQuery({
+    variables: {
+      period: dateFilter.period,
+      from: getUnixTime(dateFilter.from),
+      to: getUnixTime(dateFilter.end),
+      type: AggregateMetricType.TotalStaked
+    },
+    skip: false,
+    fetchPolicy: 'cache-and-network'
+  });
+
+  const queryDistribute = useVolumeMetricsOfTypeQuery({
+    variables: {
+      period: dateFilter.period,
+      from: getUnixTime(dateFilter.from),
+      to: getUnixTime(dateFilter.end),
+      type: TransactionType.StakingContractDistribute
+    },
+    skip: false,
+    fetchPolicy: 'cache-and-network'
+  });
+
+  return useMemo(() => {
+    if (!queryStake.data || !queryDistribute.data) return 0;
+    let aggregateApy = 0;
+
+    queryStake.data.aggregateMetrics.map(({ value: stakeVal }, index) => {
+      const distributeVal = queryDistribute.data?.volumeMetrics[index].value;
+      const percentage =
+        parseFloat(stakeVal) === 0
+          ? 0
+          : parseFloat(
+              (
+                ((parseFloat(distributeVal!) * 365) / parseFloat(stakeVal)) *
+                100
+              ).toFixed(2)
+            );
+      aggregateApy += percentage;
+    });
+    return aggregateApy / 7;
+  }, [queryStake.data, queryDistribute.data]);
+};
+
 interface ISubHeadingProps {
-  web3: Web3 | null;
-  address: string;
   totalLid: string;
   totalStaked: string;
   totalStakers: string;
@@ -16,14 +76,15 @@ interface ISubHeadingProps {
 }
 
 const SubHeading: React.FC<ISubHeadingProps> = ({
-  web3,
-  address,
   totalLid,
   totalStaked,
   totalStakers,
   accountLidStaked,
   accountLid
 }) => {
+  const averageApy = useAverageApysForPastWeek();
+  console.log('averageApy', averageApy);
+
   return (
     <Box
       w="100%"
@@ -206,6 +267,37 @@ const SubHeading: React.FC<ISubHeadingProps> = ({
             <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
               {shortEther(totalLid)}
             </Text>
+          </Box>
+          <Box
+            w="100%"
+            border="solid 1px"
+            borderColor="lid.stroke"
+            color="lid.fg"
+            borderRadius="5px"
+            p="25px"
+            bg="lid.bg"
+          >
+            <Image
+              src="/logo-200.png"
+              alt="Lid Website"
+              w="auto"
+              h="25px"
+              display="inline-block"
+              position="relative"
+              top="-3px"
+            />
+            <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
+              7 Days Average Staking APY
+            </Text>
+            <Link
+              fontSize="38px"
+              w="100%"
+              fontWeight="bold"
+              color="lid.brand"
+              href="/analytics"
+            >
+              {percentageFormat(averageApy)}
+            </Link>
           </Box>
         </Grid>
       </Flex>

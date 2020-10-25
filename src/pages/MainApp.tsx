@@ -161,8 +161,6 @@ const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect }) => {
     <>
       <Header address={address} onConnect={onConnect} />
       <SubHeading
-        web3={web3}
-        address={address}
         totalLid={totalLid}
         accountLidStaked={accountLidStaked}
         totalStakers={totalStakers}

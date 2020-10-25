@@ -3,7 +3,6 @@ import { VictoryLabel, VictoryLine, VictoryChart, VictoryAxis } from 'victory';
 import Skeleton from 'react-loading-skeleton';
 import {
   startOfDay,
-  endOfHour,
   fromUnixTime,
   subDays,
   getUnixTime,
