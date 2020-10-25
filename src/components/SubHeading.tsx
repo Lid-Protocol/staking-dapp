@@ -289,14 +289,11 @@ const SubHeading: React.FC<ISubHeadingProps> = ({
             <Text ml="10px" mt="5px" color="lid.fgMed" display="inline-block">
               7 Days Average Staking APY
             </Text>
-            <Link
-              fontSize="38px"
-              w="100%"
-              fontWeight="bold"
-              color="lid.brand"
-              href="/analytics"
-            >
+            <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
               {percentageFormat(averageApy)}
+            </Text>
+            <Link color="lid.brand" mt="5px" display="block" href="/analytics">
+              Staking Analytics
             </Link>
           </Box>
         </Grid>
