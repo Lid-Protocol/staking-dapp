@@ -21,7 +21,7 @@ const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
         <Link
           display="flex"
           alignItems="center"
-          href="https://lid.sh"
+          href="https://staking.lid.sh"
           m="0px"
           ml="-3px"
         >
@@ -36,7 +36,7 @@ const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
           <Text
             as="span"
             fontWeight="bold"
-            fontSize={isAnalytics ? ['20px' ,'28px'] : ['28px', '42px']}
+            fontSize={isAnalytics ? ['20px', '28px'] : ['28px', '42px']}
             display="inline-block"
             ml="20px"
             color={isAnalytics ? 'lid.textLight' : 'lid.brand'}

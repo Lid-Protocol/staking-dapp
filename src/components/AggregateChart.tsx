@@ -142,13 +142,14 @@ const Chart: FC<{}> = () => {
   return (
     <div>
       {loading ? (
-        <Skeleton height={400} />
+        <Skeleton height={300} />
       ) : (
         <VictoryChart
           theme={victoryTheme}
           scale="linear"
-          height={300}
-          domainPadding={{ y: 50 }}
+          height={250}
+          padding={{ left: 45, top: 10, right: 20, bottom: 40 }}
+          domainPadding={{ x: 20, y: 20 }}
           containerComponent={
             <VictoryVoronoiContainer
               voronoiDimension="x"

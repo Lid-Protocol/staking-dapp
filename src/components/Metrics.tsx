@@ -188,13 +188,13 @@ export const Metrics = <T extends string>({
         <>
           <Flex justifyContent="space-between">
             <Box>
-              <Flex w={['50px', '']} h={['120px', '']} p={['8px']} alignItems="center" justifyContent="flex-start">
+              <Flex p={['8px']} alignItems="center" justifyContent="flex-start">
                 {state.metrics.map(({ type, enabled, label, colorName }) => (
                   <Flex key={type} mr={['30px']}>
                     <Text
                       color="lid.textLight"
                       fontSize={['14px', '18px']}
-                      mr={['5px' , '10px']}
+                      mr={['5px', '10px']}
                       mt={['20px', '']}
                     >
                       {label}
