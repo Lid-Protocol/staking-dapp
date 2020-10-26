@@ -186,11 +186,18 @@ export const Metrics = <T extends string>({
         ])}
       >
         <>
-          <Flex justifyContent="space-between">
+          <Flex
+            flexDirection={['column', 'column', 'row']}
+            justifyContent="space-between"
+          >
             <Box>
               <Flex p={['8px']} alignItems="center" justifyContent="flex-start">
                 {state.metrics.map(({ type, enabled, label, colorName }) => (
-                  <Flex key={type} mr={['30px']}>
+                  <Flex
+                    flexDirection={['column', 'column', 'row']}
+                    key={type}
+                    mr={['10px', '30px']}
+                  >
                     <Text
                       color="lid.textLight"
                       fontSize={['14px', '18px']}
@@ -203,7 +210,7 @@ export const Metrics = <T extends string>({
                       // color="red"
                       isChecked={!!enabled}
                       onChange={() => toggleType(type)}
-                      mt={['20px', '']}
+                      mt={['5px', '20px']}
                     />
                   </Flex>
                 ))}

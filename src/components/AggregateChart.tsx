@@ -124,7 +124,7 @@ const Chart: FC<{}> = () => {
     () => ({
       period: dateFilter.period,
       from: getUnixTime(dateFilter.from),
-      to: getUnixTime(TOMORROW)
+      to: getUnixTime(new Date())
     }),
     [dateFilter]
   );
@@ -149,7 +149,7 @@ const Chart: FC<{}> = () => {
           scale="linear"
           height={250}
           padding={{ left: 45, top: 10, right: 20, bottom: 40 }}
-          domainPadding={{ x: 20, y: 20 }}
+          domainPadding={{ y: 20 }}
           containerComponent={
             <VictoryVoronoiContainer
               voronoiDimension="x"
