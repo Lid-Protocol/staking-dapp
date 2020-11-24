@@ -47,7 +47,7 @@ const Footer: React.FC<IProps> = ({ isAnalytics }) => {
         display="inline-block"
         target="_blank"
         rel="noreferrer noopener"
-        href="https://discord.gg/eyJYrQu"
+        href="https://discord.gg/r4CDyEnUAm"
         m="20px"
       >
         <Image w="auto" h="25px" src={iconDiscord} alt="discord" />
