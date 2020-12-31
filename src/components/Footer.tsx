@@ -98,7 +98,7 @@ const Footer: React.FC<IProps> = ({ isAnalytics }) => {
         <Image w="auto" h="25px" src={iconYoutube} alt="youtube" />
       </Link>
       <Text color="lid.buttonFgGray" m="0px" fontSize="14px">
-        © 2020 Liquidity Dividends Protocol. All Rights Reserved.
+        © 2021 Liquidity Dividends Protocol. All Rights Reserved.
       </Text>
     </Box>
   );
