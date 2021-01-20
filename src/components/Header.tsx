@@ -21,7 +21,7 @@ const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
         <Link
           display="flex"
           alignItems="center"
-          href="https://staking.lid.sh"
+          href="https://stake.lid.sh"
           m="0px"
           ml="-3px"
         >
