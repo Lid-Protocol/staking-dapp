@@ -2,6 +2,9 @@
   "name": "lid-staking",
   "version": "1.0.0",
   "private": true,
+  "author": "lid-protocol",
+  "license": "GPL-3.0-only",
+  "homepage": "./",
   "dependencies": {
     "@apollo/client": "^3.2.2",
     "@chakra-ui/core": "^0.8.0",
