@@ -5,13 +5,11 @@ import Footer from 'components/Footer';
 import { AggregateChart } from 'components/AggregateChart';
 import { VolumeChart } from 'components/VolumeChart';
 import { DailyApys } from 'components/DailyApys';
+import { useConnectedWeb3Context } from 'containers/Web3Provider';
 
-interface IProps {
-  address: string;
-  onConnect: () => void;
-}
+const Analytics: React.FC = () => {
+  const { address, onConnect } = useConnectedWeb3Context();
 
-const Analytics: React.FC<IProps> = ({ address, onConnect }) => {
   return (
     <>
       <Header address={address} onConnect={onConnect} isAnalytics />

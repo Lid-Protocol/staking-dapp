@@ -3,17 +3,29 @@ import Web3 from 'web3';
 import { HttpProvider, IpcProvider, WebsocketProvider } from 'web3-core';
 import { getRandomInfuraId, web3Modal } from 'utils';
 
-interface IWeb3Wrapper {
-  children: (
-    address: string,
-    web3: Web3 | null,
-    onConnect: () => void
-  ) => React.ReactNode;
-}
-
 type Web3Provider = HttpProvider | IpcProvider | WebsocketProvider;
 
-const Web3Wrapper: React.FC<IWeb3Wrapper> = ({ children }) => {
+export interface ConnectedWeb3ContextProps {
+  address: string;
+  web3: Web3 | null;
+  onConnect: () => void;
+}
+
+const ConnectedWeb3Context = React.createContext<ConnectedWeb3ContextProps | null>(
+  null
+);
+
+export const useConnectedWeb3Context = () => {
+  const context = React.useContext(ConnectedWeb3Context);
+
+  if (!context) {
+    throw new Error('Component rendered outside the provider tree');
+  }
+
+  return context;
+};
+
+const Web3Wrapper: React.FC = ({ children }) => {
   const [address, setAddress] = useState('');
   const [provider, setProvider] = useState<Web3Provider | null>(
     new Web3.providers.HttpProvider(
@@ -63,7 +75,17 @@ const Web3Wrapper: React.FC<IWeb3Wrapper> = ({ children }) => {
     if (window.web3) onConnect();
   }, []);
 
-  return <>{children(address, web3, onConnect)}</>;
+  const value = {
+    address: address,
+    web3: web3,
+    onConnect
+  };
+
+  return (
+    <ConnectedWeb3Context.Provider value={value}>
+      {children}
+    </ConnectedWeb3Context.Provider>
+  );
 };
 
 export default Web3Wrapper;

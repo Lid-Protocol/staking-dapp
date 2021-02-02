@@ -19,16 +19,14 @@ import abis from 'contracts/abis';
 import { addresses } from 'config';
 import { toBN, toWei } from 'utils';
 
+import { useConnectedWeb3Context } from 'containers/Web3Provider';
+
 const defaultWatcher = createWatcher([], {});
 const walletWatcher = createWatcher([], {});
 
-interface IMainApp {
-  address: string;
-  web3: Web3 | null;
-  onConnect: () => void;
-}
+const MainApp: React.FC = () => {
+  const { address, web3, onConnect } = useConnectedWeb3Context();
 
-const MainApp: React.FC<IMainApp> = ({ address, web3, onConnect }) => {
   const [lidStakingSC, setLidStakingSC] = useState<Contract | null>(null);
 
   const [state, setState] = useState({

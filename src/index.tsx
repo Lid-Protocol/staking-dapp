@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import App from './App';
 
 import * as serviceWorker from './serviceWorker';
 import 'assets/styles/global.css';
 import ThemeProvider from 'containers/ThemeProvider';
 import ApolloProvider from 'containers/ApolloProvider';
+import Web3Provider from 'containers/Web3Provider';
 
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider>
       <ThemeProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <Web3Provider>
+          <HashRouter>
+            <App />
+          </HashRouter>
+        </Web3Provider>
       </ThemeProvider>
     </ApolloProvider>
   </React.StrictMode>,
