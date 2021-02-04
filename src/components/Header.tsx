@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, Box, Flex, Image, Link, Button } from '@chakra-ui/core';
+import { Text, Box, Flex, Image,  Button } from '@chakra-ui/core';
+import { useHistory } from 'react-router-dom'
 import Blockie from './Blockie';
 
 interface IHeader {
@@ -9,6 +10,12 @@ interface IHeader {
 }
 
 const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
+  const history = useHistory();
+
+  const onClickLogo = () => {
+    history.push("/");
+  }
+
   return (
     <Box w="100%" bg={isAnalytics ? 'lid.bgDark' : 'lid.bgMed'} m="0" pt="0px">
       <Flex
@@ -18,12 +25,13 @@ const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
         pt="20px"
         px={['20px', '20px', '0px']}
       >
-        <Link
+        <Box
           display="flex"
           alignItems="center"
-          href="https://stake.lid.sh"
           m="0px"
           ml="-3px"
+          cursor="pointer"
+          onClick={onClickLogo}
         >
           <Image
             src="/logo-200.png"
@@ -43,7 +51,7 @@ const Header: React.FC<IHeader> = ({ isAnalytics, address, onConnect }) => {
           >
             {`LID ${isAnalytics ? 'ANALYTICS' : 'Staking'}`}
           </Text>
-        </Link>
+        </Box>
         {address ? (
           <Box ml="auto" display="inline-block">
             <Blockie address={address} size={40} />

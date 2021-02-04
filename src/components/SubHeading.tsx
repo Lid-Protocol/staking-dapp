@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Text, Box, Flex, Link, Grid, Image } from '@chakra-ui/core';
+import { useHistory } from 'react-router-dom';
 
 import { shortEther, percentageFormat } from 'utils';
 import { addresses } from 'config';
@@ -83,7 +84,12 @@ const SubHeading: React.FC<ISubHeadingProps> = ({
   accountLid
 }) => {
   const averageApy = useAverageApysForPastWeek();
+  const history = useHistory();
   console.log('averageApy', averageApy);
+
+  const onClickAnalytics = () => {
+    history.push('/analytics');
+  };
 
   return (
     <Box
@@ -292,14 +298,15 @@ const SubHeading: React.FC<ISubHeadingProps> = ({
             <Text fontSize="38px" w="100%" fontWeight="bold" color="lid.brand">
               {percentageFormat(averageApy)}
             </Text>
-            <Link
+            <Box
               color="lid.brand"
               mt="5px"
               display="block"
-              href="/#/analytics"
+              cursor="pointer"
+              onClick={onClickAnalytics}
             >
               Staking Analytics
-            </Link>
+            </Box>
           </Box>
         </Grid>
       </Flex>
