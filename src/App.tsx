@@ -7,8 +7,8 @@ export default () => {
   return (
     <>
       <Switch>
-        <Route component={MainApp} path="/" exact />
         <Route component={Analytics} path="/analytics" exact />
+        <Route component={MainApp} path="/" />
       </Switch>
     </>
   );
